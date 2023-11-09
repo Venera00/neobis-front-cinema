@@ -65,6 +65,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .movie-wrapper {
@@ -142,7 +144,6 @@ body {
 .movie-info__wrapper {
   display: flex;
   align-items: center;
-  /* justify-content: center; */
   gap: 2rem;
   position: relative;
 }
@@ -164,11 +165,6 @@ body {
   font-size: 1rem;
   color: #ffd80e;
 }
-
-/* .movie-rate__wrapper {
-  display: flex;
-  flex-direction: column;
-} */
 
 .movie__rating {
   position: absolute;
