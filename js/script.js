@@ -30,9 +30,7 @@ function showMovies(data) {
           <div class="movie__info">
             <div class="movie__title">${movie.nameRu}</div>
             <div class="movie__year">${movie.year}</div>
-            <div class="movie__genre">${movie.genres.map(
-              (genre) => `${genre.genre}`
-            )}</div>
+            <div class="movie__genre">${movie.genres[0].genre}</div>
           </div>
           <div class="movie__rating movie__rating-green">8</div>
           <div class="movie-rate__wrapper">

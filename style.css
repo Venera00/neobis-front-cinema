@@ -62,20 +62,23 @@ body {
 }
 
 .section-movies {
-  gap: 1rem;
   display: flex;
   flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .movie-wrapper {
-  width: 17rem;
-  height: 25rem;
+  width: 18rem;
+  height: 26rem;
+  background-color: #26252b;
+  border-radius: 1.6rem;
 }
 
 .movie__img {
-  width: 17rem;
+  width: 18rem;
   height: 20rem;
   cursor: pointer;
+  border-radius: 1.6rem 1.6rem 0 0;
 }
 
 .movie__img:hover {
@@ -88,6 +91,7 @@ body {
   align-items: center;
   gap: 0.5rem;
   color: #fff;
+  padding-left: 0.7rem;
 }
 
 .heart {
@@ -100,6 +104,7 @@ body {
   transform: rotate(-45deg);
   position: absolute;
   cursor: pointer;
+  right: 1rem;
 }
 
 .heart:before,
