@@ -5,11 +5,15 @@ console.log(month);
 console.log(year);
 
 const API_KEY = "7f040a3b-2c46-4b61-a7f9-7726d3d1a082";
-const API_URL_POPULAR =
-  "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1";
 const API_URL_SEARCH =
   "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=";
+
 const API_PREMIERES = `https://kinopoiskapiunofficial.tech/api/v2.2/films/premieres?year=${year}&month=${month}`;
+const API_WAITED =
+  "https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=CLOSES_RELEASES&page=1";
+const API_URL_POPULAR =
+  "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1";
+const API_RELEASES = `https://kinopoiskapiunofficial.tech/api/v2.1/films/releases?year=${year}&month=${month}&page=1`;
 
 getMovies(API_URL_POPULAR);
 async function getMovies(url) {
@@ -77,6 +81,9 @@ function showMovies(data) {
 const form = document.querySelector("form");
 const searchInput = document.querySelector(".header__search");
 const premiere = document.querySelector(".premiere");
+const topWaited = document.querySelector(".top-waited");
+const topBest = document.querySelector(".top-best");
+const releaseOfMonth = document.querySelector(".release");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -93,4 +100,22 @@ premiere.addEventListener("click", (e) => {
   e.preventDefault();
 
   getMovies(API_PREMIERES);
+});
+
+topWaited.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  getMovies(API_WAITED);
+});
+
+topBest.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  getMovies(API_URL_POPULAR);
+});
+
+releaseOfMonth.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  getMovies(API_RELEASES);
 });
