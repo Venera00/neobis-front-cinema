@@ -1,3 +1,10 @@
+const form = document.querySelector("form");
+const searchInput = document.querySelector(".header__search");
+const premiere = document.querySelector(".premiere");
+const topWaited = document.querySelector(".top-waited");
+const topBest = document.querySelector(".top-best");
+const releaseOfMonth = document.querySelector(".release");
+
 const date = new Date();
 const month = date.toLocaleString("en-US", { month: "long" }).toUpperCase();
 const year = date.getFullYear();
@@ -24,6 +31,7 @@ async function getMovies(url) {
     },
   });
   const respData = await resp.json();
+  console.log("API Response Data:", respData);
   showMovies(respData);
 }
 
@@ -42,8 +50,17 @@ function showMovies(data) {
 
   moviesEl.innerHTML = "";
 
-  if (data.films) {
-    data.films.forEach((movie) => {
+  let filmsArray = data.films;
+  if (filmsArray && data.results) {
+    films.Array = data.results;
+  } else if (!filmsArray && data.items) {
+    filmsArray = data.items;
+  } else if (!filmsArray && data.releases) {
+    filmsArray = data.releases;
+  }
+
+  if (filmsArray && Array.isArray(filmsArray)) {
+    filmsArray.forEach((movie) => {
       const movieEl = document.createElement("div");
       movieEl.classList.add("movie-wrapper");
       movieEl.innerHTML = `
@@ -59,13 +76,14 @@ function showMovies(data) {
                 <div class="movie__genre">${movie.genres[0]?.genre}</div>
               </div>
               ${
-                movie.rating &&
-                `
+                movie.rating != null
+                  ? `
               <div class="movie__rating movie__rating-${getByRate(
                 movie.rating
               )}">${movie.rating}
-              </div>
+              </div> 
               `
+                  : ""
               }
     
               <div class="movie-rate__wrapper">
@@ -77,13 +95,6 @@ function showMovies(data) {
     });
   }
 }
-
-const form = document.querySelector("form");
-const searchInput = document.querySelector(".header__search");
-const premiere = document.querySelector(".premiere");
-const topWaited = document.querySelector(".top-waited");
-const topBest = document.querySelector(".top-best");
-const releaseOfMonth = document.querySelector(".release");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
