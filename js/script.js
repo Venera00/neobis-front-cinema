@@ -1,69 +1,70 @@
-const form = document.querySelector("form");
-const searchInput = document.querySelector(".header__search");
-const premiere = document.querySelector(".premiere");
-const topWaited = document.querySelector(".top-waited");
-const topBest = document.querySelector(".top-best");
-const releaseOfMonth = document.querySelector(".release");
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("form");
+  const searchInput = document.querySelector(".header__search");
+  const premiere = document.querySelector(".premiere");
+  const topWaited = document.querySelector(".top-waited");
+  const topBest = document.querySelector(".top-best");
+  const releaseOfMonth = document.querySelector(".release");
 
-const date = new Date();
-const month = date.toLocaleString("en-US", { month: "long" }).toUpperCase();
-const year = date.getFullYear();
-console.log(month);
-console.log(year);
+  const date = new Date();
+  const month = date.toLocaleString("en-US", { month: "long" }).toUpperCase();
+  const year = date.getFullYear();
+  console.log(month);
+  console.log(year);
 
-const API_KEY = "7f040a3b-2c46-4b61-a7f9-7726d3d1a082";
-const API_URL_SEARCH =
-  "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=";
+  const API_KEY = "7f040a3b-2c46-4b61-a7f9-7726d3d1a082";
+  const API_URL_SEARCH =
+    "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=";
 
-const API_PREMIERES = `https://kinopoiskapiunofficial.tech/api/v2.2/films/premieres?year=${year}&month=${month}`;
-const API_WAITED =
-  "https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=CLOSES_RELEASES&page=1";
-const API_URL_POPULAR =
-  "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1";
-const API_RELEASES = `https://kinopoiskapiunofficial.tech/api/v2.1/films/releases?year=${year}&month=${month}&page=1`;
+  const API_PREMIERES = `https://kinopoiskapiunofficial.tech/api/v2.2/films/premieres?year=${year}&month=${month}`;
+  const API_WAITED =
+    "https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=CLOSES_RELEASES&page=1";
+  const API_URL_POPULAR =
+    "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1";
+  const API_RELEASES = `https://kinopoiskapiunofficial.tech/api/v2.1/films/releases?year=${year}&month=${month}&page=1`;
 
-getMovies(API_URL_POPULAR);
-async function getMovies(url) {
-  const resp = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": API_KEY,
-    },
-  });
-  const respData = await resp.json();
-  console.log("API Response Data:", respData);
-  showMovies(respData);
-}
-
-function getByRate(rate) {
-  if (rate >= 7) {
-    return "green";
-  } else if (rate >= 5) {
-    return "orange";
-  } else {
-    return "red";
-  }
-}
-
-function showMovies(data) {
-  const moviesEl = document.querySelector(".section-movies");
-
-  moviesEl.innerHTML = "";
-
-  let filmsArray = data.films;
-  if (filmsArray && data.results) {
-    films.Array = data.results;
-  } else if (!filmsArray && data.items) {
-    filmsArray = data.items;
-  } else if (!filmsArray && data.releases) {
-    filmsArray = data.releases;
+  getMovies(API_URL_POPULAR);
+  async function getMovies(url) {
+    const resp = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": API_KEY,
+      },
+    });
+    const respData = await resp.json();
+    console.log("API Response Data:", respData);
+    showMovies(respData);
   }
 
-  if (filmsArray && Array.isArray(filmsArray)) {
-    filmsArray.forEach((movie) => {
-      const movieEl = document.createElement("div");
-      movieEl.classList.add("movie-wrapper");
-      movieEl.innerHTML = `
+  function getByRate(rate) {
+    if (rate >= 7) {
+      return "green";
+    } else if (rate >= 5) {
+      return "orange";
+    } else {
+      return "red";
+    }
+  }
+
+  function showMovies(data) {
+    const moviesEl = document.querySelector(".section-movies");
+
+    moviesEl.innerHTML = "";
+
+    let filmsArray = data.films;
+    if (filmsArray && data.results) {
+      films.Array = data.results;
+    } else if (!filmsArray && data.items) {
+      filmsArray = data.items;
+    } else if (!filmsArray && data.releases) {
+      filmsArray = data.releases;
+    }
+
+    if (filmsArray && Array.isArray(filmsArray)) {
+      filmsArray.forEach((movie) => {
+        const movieEl = document.createElement("div");
+        movieEl.classList.add("movie-wrapper");
+        movieEl.innerHTML = `
         <img
               src="${movie.posterUrlPreview}"
               alt="${movie.nameRu}"
@@ -91,42 +92,54 @@ function showMovies(data) {
               </div>
             </div>
         `;
-      moviesEl.appendChild(movieEl);
+        moviesEl.appendChild(movieEl);
+      });
+    }
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const searchUrl = `${API_URL_SEARCH}${searchInput.value}`;
+    if (searchInput.value) {
+      getMovies(searchUrl);
+
+      searchInput.value = "";
+    }
+  });
+
+  premiere.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    getMovies(API_PREMIERES);
+  });
+
+  topWaited.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    getMovies(API_WAITED);
+  });
+
+  topBest.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    getMovies(API_URL_POPULAR);
+  });
+
+  releaseOfMonth.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    getMovies(API_RELEASES);
+  });
+
+  const categories = document.querySelectorAll(".category-type");
+  categories.forEach((category) => {
+    category.addEventListener("click", () => {
+      categories.forEach((item) => {
+        item.classList.remove("active");
+      });
+
+      category.classList.add("active");
     });
-  }
-}
-
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const searchUrl = `${API_URL_SEARCH}${searchInput.value}`;
-  if (searchInput.value) {
-    getMovies(searchUrl);
-
-    searchInput.value = "";
-  }
-});
-
-premiere.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  getMovies(API_PREMIERES);
-});
-
-topWaited.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  getMovies(API_WAITED);
-});
-
-topBest.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  getMovies(API_URL_POPULAR);
-});
-
-releaseOfMonth.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  getMovies(API_RELEASES);
+  });
 });

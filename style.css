@@ -56,7 +56,7 @@ body {
   color: #fff;
 }
 
-.category-type:active {
+.category-type.active {
   background-color: #0f0f0f;
   color: #fff;
 }
