@@ -5,12 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const topWaited = document.querySelector(".top-waited");
   const topBest = document.querySelector(".top-best");
   const releaseOfMonth = document.querySelector(".release");
+  const categories = document.querySelectorAll(".category-type");
+  const favourites = document.querySelector(".favourite");
 
   const date = new Date();
   const month = date.toLocaleString("en-US", { month: "long" }).toUpperCase();
   const year = date.getFullYear();
-  console.log(month);
-  console.log(year);
 
   const API_KEY = "7f040a3b-2c46-4b61-a7f9-7726d3d1a082";
   const API_URL_SEARCH =
@@ -53,14 +53,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let filmsArray = data.films;
     if (filmsArray && data.results) {
-      films.Array = data.results;
+      filmsArray = data.results;
     } else if (!filmsArray && data.items) {
       filmsArray = data.items;
     } else if (!filmsArray && data.releases) {
       filmsArray = data.releases;
     }
 
-    if (filmsArray && Array.isArray(filmsArray)) {
+    if (filmsArray) {
       filmsArray.forEach((movie) => {
         const movieEl = document.createElement("div");
         movieEl.classList.add("movie-wrapper");
@@ -88,7 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
               }
     
               <div class="movie-rate__wrapper">
-                <button href="#" class="heart"></button>
+                <button href="#" class="heart" data-movie-id= ${
+                  movie.id
+                }></button>
               </div>
             </div>
         `;
@@ -132,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
     getMovies(API_RELEASES);
   });
 
-  const categories = document.querySelectorAll(".category-type");
   categories.forEach((category) => {
     category.addEventListener("click", () => {
       categories.forEach((item) => {
@@ -142,4 +143,21 @@ document.addEventListener("DOMContentLoaded", () => {
       category.classList.add("active");
     });
   });
+
+  favourites.addEventListener("click", (e) => {
+    e.preventDefault();
+    const likedMovies = JSON.parse(localStorage.getItem("likedMovies")) || [];
+  });
+
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("heart")) {
+      const movieFav = e.target.getAttribute("data-movie-id");
+
+      console.log(movieFav);
+
+      e.target.classList.toggle("heart:focus");
+    }
+  });
+  // localStorage.getItem();
+  localStorage.setItem("favourites", JSON.stringify(favourites));
 });
