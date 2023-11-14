@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const topBest = document.querySelector(".top-best");
   const releaseOfMonth = document.querySelector(".release");
   const categories = document.querySelectorAll(".category-type");
+  const favoriteMoviesSection = document.querySelector(".favourite");
   let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
   const date = new Date();
@@ -94,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const heartButton = movieEl.querySelector(".heart");
           heartButton.addEventListener("click", () => {
             const isMovieInFavorites = favorites.some((favMovie) => {
-              favMovie.id === filmsArray;
+              favMovie.id === movie.filmId;
             });
 
             if (!isMovieInFavorites) {
@@ -149,6 +150,12 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     getMovies(API_RELEASES);
+  });
+
+  favoriteMoviesSection.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    showMovies(favorites);
   });
 
   categories.forEach((category) => {
