@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form");
   const searchInput = document.querySelector(".header__search");
+  const moviesEl = document.querySelector(".section-movies");
   const premiere = document.querySelector(".premiere");
   const topWaited = document.querySelector(".top-waited");
   const topBest = document.querySelector(".top-best");
   const releaseOfMonth = document.querySelector(".release");
   const categories = document.querySelectorAll(".category-type");
-  const favourites = document.querySelector(".favourite");
+  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
   const date = new Date();
   const month = date.toLocaleString("en-US", { month: "long" }).toUpperCase();
@@ -24,6 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const API_RELEASES = `https://kinopoiskapiunofficial.tech/api/v2.1/films/releases?year=${year}&month=${month}&page=1`;
 
   getMovies(API_URL_POPULAR);
+
+  let originalData = [];
   async function getMovies(url) {
     const resp = await fetch(url, {
       headers: {
@@ -33,6 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const respData = await resp.json();
     console.log("API Response Data:", respData);
+    originalData =
+      respData.films || respData.results || respData.items || respData.releases;
     showMovies(respData);
   }
 
@@ -47,18 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showMovies(data) {
-    const moviesEl = document.querySelector(".section-movies");
-
     moviesEl.innerHTML = "";
 
-    let filmsArray = data.films;
-    if (filmsArray && data.results) {
-      filmsArray = data.results;
-    } else if (!filmsArray && data.items) {
-      filmsArray = data.items;
-    } else if (!filmsArray && data.releases) {
-      filmsArray = data.releases;
-    }
+    let filmsArray = data.films || data.results || data.items || data.releases;
 
     if (filmsArray) {
       filmsArray.forEach((movie) => {
@@ -88,13 +84,34 @@ document.addEventListener("DOMContentLoaded", () => {
               }
     
               <div class="movie-rate__wrapper">
-                <button href="#" class="heart" data-movie-id= ${
-                  movie.id
-                }></button>
+                <button href="#" class="heart" ></button>
               </div>
             </div>
         `;
         moviesEl.appendChild(movieEl);
+
+        if (movie.rating != null) {
+          const heartButton = movieEl.querySelector(".heart");
+          heartButton.addEventListener("click", () => {
+            const isMovieInFavorites = favorites.some((favMovie) => {
+              favMovie.id === filmsArray;
+            });
+
+            if (!isMovieInFavorites) {
+              const movieData = {
+                id: movie.filmId,
+                name: movie.nameRu,
+                rating: movie.rating,
+              };
+
+              favorites.push(movieData);
+              localStorage.setItem("favorites", JSON.stringify(favorites));
+              console.log("Фильм добавлен в избранное:", movieData);
+            } else {
+              console.log("Фильм уже есть в избранном");
+            }
+          });
+        }
       });
     }
   }
@@ -143,21 +160,4 @@ document.addEventListener("DOMContentLoaded", () => {
       category.classList.add("active");
     });
   });
-
-  favourites.addEventListener("click", (e) => {
-    e.preventDefault();
-    const likedMovies = JSON.parse(localStorage.getItem("likedMovies")) || [];
-  });
-
-  document.addEventListener("click", (e) => {
-    if (e.target.classList.contains("heart")) {
-      const movieFav = e.target.getAttribute("data-movie-id");
-
-      console.log(movieFav);
-
-      e.target.classList.toggle("heart:focus");
-    }
-  });
-  // localStorage.getItem();
-  localStorage.setItem("favourites", JSON.stringify(favourites));
 });
